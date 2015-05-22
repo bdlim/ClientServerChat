@@ -91,7 +91,7 @@ while (message != ':q'):
 	else:
 		if (name is None):
 			name = message;
-#			client.do_send(name + ' has joined the chat');
+			client.do_send(name + ' has joined the chat');
 			print('Hello ' + name + '!');
 			print('1 - Complaint');
 			print('2 - Question');
@@ -100,7 +100,7 @@ while (message != ':q'):
 		elif (option is None):
 			if ((message == '1') or (message == '2') or (message == '3')):
 				option = message;
-#				client.do_send(name + ' has selected option: ' + option);
+				client.do_send(name + ' has selected option: ' + option);
 				print('You have selected option: ' + option);
 				message = raw_input('Please enter the topic: ');
 			else:
@@ -108,7 +108,7 @@ while (message != ':q'):
 				message = raw_input('Please try again: ');
 		elif (topic is None):
 			topic = message;
-#			client.do_send(name + ' says the topic of the conversation is: ' + topic);
+			client.do_send(name + ' says the topic of the conversation is: ' + topic);
 			print('You have stated that the topic is: ' + topic);
 			print('You may start your conversation!');
 #			message = raw_input(name + ': ');
