@@ -1,39 +1,30 @@
-import socket
-import sys
+from network import Listener, Handler, poll
 
-# Create a TCP/IP socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ 
+handlers = {}  # map client handler to user name
+ 
+class MyHandler(Handler):
+     
+    def on_open(self):
+        pass
+         
+    def on_close(self):
+        pass
+     
+    def on_msg(self, msg):
+        print msg
+ 
+ 
+port = 8888
+server = Listener(port, MyHandler)
+while 1:
+    poll(timeout=0.05) # in seconds
 
-# Bind the socket to the port
-TCP_IP = '127.0.0.1'
-TCP_PORT = 5006
-BUFFER_SIZE = 1024
-print >> sys.stderr, 'starting up on %s port %s' % (TCP_IP, TCP_PORT)
-s.bind((TCP_IP, TCP_PORT))
+# print('Welcome to chat!');
+# message = None;
 
-# Listen for incoming connections
-s.listen(5)
+# while (message != ':q'):
+# 	message = message.rstrip();
+# 	message = raw_input('Admin: ');
 
-SERVER_MESSAGE = 'Hello. I am the server.'
-
-while True:
-    # Wait for incoming connections
-    print >> sys.stderr, 'waiting for connection'
-    connection, client_address = s.accept()
-
-    try:
-        print >> sys.stderr, 'connection from', client_address
-
-        # Receive the data in small chunks and retransmit it
-        while True:
-            data = connection.recv(BUFFER_SIZE)
-            print >> sys.stderr, 'received "%s"' % data
-            if data:
-                print >> sys.stderr, 'sending response to the client'
-                connection.sendall(SERVER_MESSAGE)
-            else:
-                print >> sys.stderr, 'no more data from', client_address
-                break
-    finally:
-        # Clean up the connection
-        connection.close()
+# server.stop();

@@ -1,32 +1,106 @@
-import socket
+# -*- coding: utf-8 -*-
+from network import Handler, poll
 import sys
+from threading import Thread
+from time import sleep
 
-# Create a TCP/IP socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+class Client(Handler):
+	
+	def on_close(self):
+		pass
+	
+	def on_msg(self, msg):
+		print msg
+		
+host, port = 'localhost', 8888
+client = Client(host, port);
 
-# Connect the socket to the port where the server is listening
-TCP_IP = '127.0.0.1'
-TCP_PORT = 5006
-BUFFER_SIZE = 1024
-print >> sys.stderr, 'connecting to %s port %s' % (TCP_IP, TCP_PORT)
-s.connect((TCP_IP, TCP_PORT))
+def periodic_poll():
+	while 1:
+		poll()
+		sleep(0.05)  # seconds
+							
+thread = Thread(target=periodic_poll)
+thread.daemon = True  # die when the main thread dies 
+thread.start()
 
-try:
+name = None;
+option = None;
+topic = None;
 
-    # Send data
-    CLIENT_MESSAGE = 'Hello. I am the client.'
-    print >> sys.stderr, 'sending "%s"' % CLIENT_MESSAGE
-    s.sendall(CLIENT_MESSAGE)
+def saveCopyOfChat():
+	print('Saved a copy of the chat');
 
-    # Look for the response
-    amount_received = 0
-    amount_expected = len(CLIENT_MESSAGE)
+def printEasterEgg():
+	print('');
+	print('Easter egg!');
+	print('How we felt while making this project');
+	print('');
+	print('(╯°□°）╯︵ ┻━┻');
+	print('');
+	print('How we felt finishing this project');
+	print('');
+	print('┏━┓ ︵ /(^.^/)');
+	print('');
 
-    while amount_received < amount_expected:
-        data = s.recv(BUFFER_SIZE)
-        amount_received += len(data)
-        print >> sys.stderr, 'received "%s"' % data
+print('Welcome to chat!');
+message = raw_input('Please enter your name: ');
 
-finally:
-    print >> sys.stderr, 'closing socket'
-    s.close()
+while (message != ':q'):
+	message = message.rstrip();
+	if (message == ':s'):
+		saveCopyOfChat();
+		if (name is None):
+			message = raw_input('Please enter your name: ');
+		elif (option is None):
+			print('1 - Complaint');
+			print('2 - Question');
+			print('3 - Other');
+			message = raw_input('Please select an option: ');
+		elif (topic is None):
+			message = raw_input('Please enter the topic: ');
+		else:
+			message = raw_input(name + ': ');
+	elif (message == ':e'):
+		printEasterEgg();
+		if (name is None):
+			message = raw_input('Please enter your name: ');
+		elif (option is None):
+			print('1 - Complaint');
+			print('2 - Question');
+			print('3 - Other');
+			message = raw_input('Please select an option: ');
+		elif (topic is None):
+			message = raw_input('Please enter the topic: ');
+		else:
+			message = raw_input(name + ': ');
+	else:
+		if (name is None):
+			name = message;
+			client.do_send(name + ' has joined the chat');
+			print('Hello ' + name + '!');
+			print('1 - Complaint');
+			print('2 - Question');
+			print('3 - Other');
+			message = raw_input('Please select an option: ');
+		elif (option is None):
+			if ((message == '1') or (message == '2') or (message == '3')):
+				option = message;
+				client.do_send(name + ' has selected option: ' + option);
+				print('You have selected option: ' + option);
+				message = raw_input('Please enter the topic: ');
+			else:
+				print('You have selected an invalid option: ' + message);
+				message = raw_input('Please try again: ');
+		elif (topic is None):
+			topic = message;
+			client.do_send(name + ' says the topic of the conversation is: ' + topic);
+			print('You have stated that the topic is: ' + topic);
+			print('You may start your conversation!');
+			message = raw_input(name + ': ');
+		else:
+			client.do_send(name + ': ' + message);
+			message = raw_input(name + ': ');
+
+client.do_send(name + ' has left the chat');
+sys.exit("Quitted chat");
