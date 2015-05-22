@@ -4,6 +4,8 @@ import sys
 from threading import Thread
 from time import sleep
 
+######## MODEL ########
+
 class Client(Handler):
 	
 	def on_close(self):
@@ -24,9 +26,7 @@ thread = Thread(target=periodic_poll)
 thread.daemon = True  # die when the main thread dies 
 thread.start()
 
-name = None;
-option = None;
-topic = None;
+######## VIEW ########
 
 def saveCopyOfChat():
 	print('Saved a copy of the chat');
@@ -42,6 +42,12 @@ def printEasterEgg():
 	print('');
 	print('┏━┓ ︵ /(^.^/)');
 	print('');
+
+######## CONTROLLER ########
+
+name = None;
+option = None;
+topic = None;
 
 print('Welcome to chat!');
 message = raw_input('Please enter your name: ');
