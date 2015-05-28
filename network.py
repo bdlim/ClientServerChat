@@ -1,5 +1,5 @@
 """
-Simple JSON wrapper on top of asyncore TCP sockets. 
+Simple JSON wrapper on top of asyncore TCP sockets.
 Provides on_open, on_close, on_msg, do_send, and do_close callbacks.
 
 Public domain
@@ -53,7 +53,7 @@ import time
 
 
 class Handler(asynchat.async_chat):
-    
+
     def __init__(self, host, port, sock=None):
         if sock:  # passive side: Handler automatically created by a Listener
             asynchat.async_chat.__init__(self, sock)
@@ -63,7 +63,7 @@ class Handler(asynchat.async_chat):
             self.connect((host, port))  # asynchronous and non-blocking
         self.set_terminator('\0')
         self._buffer = []
-        
+
     def collect_incoming_data(self, data):
         self._buffer.append(data)
 
@@ -71,42 +71,42 @@ class Handler(asynchat.async_chat):
         msg = self.decode(''.join(self._buffer))
         self._buffer = []
         self.on_msg(msg)
-    
+
     def handle_close(self):
         self.close()
         self.on_close()
 
     def handle_connect(self):  # called on the active side
         self.on_open()
-        
+
     # API you can use
     def do_send(self, msg):
         self.push(self.encode(msg) + '\0')
-        
+
     def do_close(self):
         self.handle_close()  # will call self.on_close
-    
+
     def encode(self, msg):
         # return base64.b64encode(zlib.compress(msg))
         return json.dumps(msg)
-    
+
     def decode(self, msg):
         # return base64.b64decode(zlib.decompress(msg))
         return json.loads(msg)
-    
+
     # callbacks you should override
     def on_open(self):
         pass
-        
+
     def on_close(self):
         pass
-        
+
     def on_msg(self, data):
         pass
-    
-    
+
+
 class Listener(asyncore.dispatcher):
-    
+
     def __init__(self, port, handler_class):
         asyncore.dispatcher.__init__(self)
         self.handler_class = handler_class
@@ -121,7 +121,7 @@ class Listener(asyncore.dispatcher):
             h = self.handler_class(host, port, sock)
             self.on_accept(h)
             h.on_open()
-    
+
     # API you can use
     def stop(self):
         self.close()
@@ -129,8 +129,8 @@ class Listener(asyncore.dispatcher):
     # callbacks you override
     def on_accept(self, h):
         pass
-    
-    
+
+
 def poll(timeout=0):
     asyncore.loop(timeout=timeout, count=1)  # return right away
 
@@ -166,6 +166,6 @@ def get_my_ip():
     return ip
 
 
-                
+
 if __name__ == '__main__':
     print get_my_ip()
