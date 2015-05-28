@@ -13,7 +13,7 @@ from view import display, printEasterEgg
 running = True
 myname = None
 active = False
-
+chat = "####### CHAT LOG ######\n"
 
 
 
@@ -26,14 +26,18 @@ class Client(Handler):
 
 	def on_close(self):
 		global running
+		global chat
 		running = False
 		display("Goodbye! Press Enter to end program.")
 
 	def on_msg(self, msg):
 		global active
+		global chat
+
 		if msg == 'Connecting Now!':
 			active = True
 		display(msg)
+		chat += (msg + "\n")
 
 
 def chatSettings():
@@ -86,7 +90,11 @@ while running:
 			client.do_close()
 		elif (mytxt == ":s"):
 			client.do_send({'name': myname, 'special': 's'})
+			f = open('log.txt', 'w')
+			f.write(chat)
+			display("Chat Logged Successfully")
 		elif (mytxt == ":e"):
 			printEasterEgg()
 		else:
 			client.do_send({'name': myname, 'txt': mytxt})
+			chat += (myname + ": " + mytxt + "\n")
