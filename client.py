@@ -4,6 +4,7 @@ import sys
 from threading import Thread
 from time import sleep
 
+myname = None
 
 class Client(Handler):
 
@@ -17,6 +18,8 @@ class Client(Handler):
 		print msg
 
 def chatSettings():
+	global myname
+	
 	personnel = raw_input('Are you agent or customer? ')
 	while (personnel != "agent") and (personnel != "customer"):
 		personnel = raw_input('Invalid. Please select agent or customer: ')
