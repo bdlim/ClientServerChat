@@ -12,6 +12,7 @@ from view import display, printEasterEgg
 
 running = True
 myname = None
+mytxt = None
 active = False
 chat = "####### CHAT LOG ######\n"
 
