@@ -29,6 +29,7 @@ class MyHandler(Handler):
                 agentHandler = self
                 print 'Agent ' + agentName + ' has connected successfully!'
                 agentHandler.do_send('Welcome to the Chat System. Please wait to be connected')
+                agentHandler.do_send('Connecting Now!')
             elif msg['personnel'] == 'customer':
                 if (customerName is None) and (customerHandler is None):
                     customerName = msg['join']
@@ -39,6 +40,7 @@ class MyHandler(Handler):
                     agentHandler.do_send('Topic is: ' + msg['topic'])
                     agentHandler.do_send('You are now connected to Customer ' + customerName)
                     customerHandler.do_send('Welcome to the Chat System. Please wait to be connected')
+                    customerHandler.do_send('Connecting Now!')
                     customerHandler.do_send('You are now connected to Agent ' + agentName)
                 else:
                     queue.put({'name': msg['join'], 'option': msg['option'], 'topic': msg['topic'], 'handler': self})
@@ -49,9 +51,9 @@ class MyHandler(Handler):
                 print 'Error'
         elif 'txt' in msg:
             if msg['name'] == agentName:
-                customerHandler.do_send(msg['txt'])
+                customerHandler.do_send(agentName + ": " + msg['txt'])
             elif msg['name'] == customerName:
-                agentHandler.do_send(msg['txt'])
+                agentHandler.do_send(customerName + ": " + msg['txt'])
             else:
                 self.do_send('All available agents are busy. Please wait')
         elif 'special' in msg:
@@ -67,6 +69,7 @@ class MyHandler(Handler):
                     agentHandler.do_send(handleOption(nextCustomer['option']))
                     agentHandler.do_send('Topic is: ' + nextCustomer['topic'])
                     agentHandler.do_send('You are now connected to Customer ' + customerName)
+                    customerHandler.do_send('Connecting Now!')
                     customerHandler.do_send('You are now connected to Agent ' + agentName)
                 else:
                     customerName = None
