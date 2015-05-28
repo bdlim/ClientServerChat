@@ -4,11 +4,6 @@ import sys
 from threading import Thread
 from time import sleep
 
-personnel = raw_input('Are you agent or customer?\n')
-while (personnel != "agent") and (personnel != "customer"):
-	print personnel
-	personnel = raw_input('Invalid. Please select agent or customer\n')
-myname = raw_input('What is your name? \n')
 
 class Client(Handler):
 
@@ -21,9 +16,30 @@ class Client(Handler):
 	def on_msg(self, msg):
 		print msg
 
+def chatSettings():
+	personnel = raw_input('Are you agent or customer? ')
+	while (personnel != "agent") and (personnel != "customer"):
+		personnel = raw_input('Invalid. Please select agent or customer: ')
+	myname = raw_input('What is your name? ')
+	while (myname == ""):
+		myname = raw_input('Invalid. Please put a valid name: ')
+	if (personnel == "customer"):
+		print('1 - Complaint');
+		print('2 - Question');
+		print('3 - Other');
+		myoption = raw_input('Please select an option: ');
+		while (myoption != "1") and (myoption != "2") and (myoption != "3"):
+			myoption = raw_input('Invalid. Please select an option: ')
+		mytopic = raw_input('What is your topic? ')
+		while (mytopic == ""):
+			mytopic = raw_input('Invalid. Please put a valid topic: ')
+		return {'join': myname, 'personnel': personnel, 'option': myoption, 'topic': mytopic}
+	else:
+		return {'join': myname, 'personnel': personnel}
+
 host, port = 'localhost', 8888
 client = Client(host, port);
-client.do_send({'join': myname, 'personnel': personnel})
+client.do_send(chatSettings())
 
 def periodic_poll():
 	while 1:
