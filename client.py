@@ -4,30 +4,58 @@ import sys
 from threading import Thread
 from time import sleep
 
-######## MODEL ########
 
 class Client(Handler):
-	
+
+	def on_open(self):
+		pass
+
 	def on_close(self):
 		pass
-	
+
 	def on_msg(self, msg):
 		print msg
-		
+
+def chatSettings():
+	personnel = raw_input('Are you agent or customer? ')
+	while (personnel != "agent") and (personnel != "customer"):
+		personnel = raw_input('Invalid. Please select agent or customer: ')
+	myname = raw_input('What is your name? ')
+	while (myname == ""):
+		myname = raw_input('Invalid. Please put a valid name: ')
+	if (personnel == "customer"):
+		print('1 - Complaint');
+		print('2 - Question');
+		print('3 - Other');
+		myoption = raw_input('Please select an option: ');
+		while (myoption != "1") and (myoption != "2") and (myoption != "3"):
+			myoption = raw_input('Invalid. Please select an option: ')
+		mytopic = raw_input('What is your topic? ')
+		while (mytopic == ""):
+			mytopic = raw_input('Invalid. Please put a valid topic: ')
+		return {'join': myname, 'personnel': personnel, 'option': myoption, 'topic': mytopic}
+	else:
+		return {'join': myname, 'personnel': personnel}
+
 host, port = 'localhost', 8888
 client = Client(host, port);
+client.do_send(chatSettings())
 
 def periodic_poll():
 	while 1:
 		poll()
 		sleep(0.05)  # seconds
-							
+
 thread = Thread(target=periodic_poll)
-thread.daemon = True  # die when the main thread dies 
+thread.daemon = True  # die when the main thread dies
 thread.start()
 
-######## VIEW ########
+while 1:
+	mytxt = raw_input('')
+	client.do_send({'name': myname, 'txt': mytxt})
 
+
+"""
 def saveCopyOfChat():
 	print('Saved a copy of the chat');
 
@@ -45,9 +73,11 @@ def printEasterEgg():
 
 ######## CONTROLLER ########
 
+userType = None; # Customer or Agent
 name = None;
 option = None;
 topic = None;
+
 
 print('Welcome to chat!');
 message = raw_input('Please enter your name: ');
@@ -107,6 +137,6 @@ while (message != ':q'):
 		else:
 			client.do_send(name + ': ' + message);
 			message = raw_input(name + ': ');
-
 client.do_send(name + ' has left the chat');
 sys.exit("Quitted chat");
+"""
