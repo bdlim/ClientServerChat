@@ -4,30 +4,42 @@ import sys
 from threading import Thread
 from time import sleep
 
-######## MODEL ########
+personnel = raw_input('Are you agent or customer?\n')
+while (personnel != "agent") and (personnel != "customer"):
+	print personnel
+	personnel = raw_input('Invalid. Please select agent or customer\n')
+myname = raw_input('What is your name? \n')
 
 class Client(Handler):
-	
+
+	def on_open(self):
+		pass
+
 	def on_close(self):
 		pass
-	
+
 	def on_msg(self, msg):
 		print msg
-		
+
 host, port = 'localhost', 8888
 client = Client(host, port);
+client.do_send({'join': myname, 'personnel': personnel})
 
 def periodic_poll():
 	while 1:
 		poll()
 		sleep(0.05)  # seconds
-							
+
 thread = Thread(target=periodic_poll)
-thread.daemon = True  # die when the main thread dies 
+thread.daemon = True  # die when the main thread dies
 thread.start()
 
-######## VIEW ########
+while 1:
+	mytxt = raw_input('')
+	client.do_send({'name': myname, 'txt': mytxt})
 
+
+"""
 def saveCopyOfChat():
 	print('Saved a copy of the chat');
 
@@ -45,9 +57,11 @@ def printEasterEgg():
 
 ######## CONTROLLER ########
 
+userType = None; # Customer or Agent
 name = None;
 option = None;
 topic = None;
+
 
 print('Welcome to chat!');
 message = raw_input('Please enter your name: ');
@@ -107,6 +121,6 @@ while (message != ':q'):
 		else:
 			client.do_send(name + ': ' + message);
 			message = raw_input(name + ': ');
-
 client.do_send(name + ' has left the chat');
 sys.exit("Quitted chat");
+"""
