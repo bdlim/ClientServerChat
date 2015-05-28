@@ -35,12 +35,7 @@ class MyHandler(Handler):
                     customerHandler = self
                     print 'Customer ' + customerName + ' has connected successfully!'
                     agentHandler.do_send('Customer ' + customerName + ' is being connected')
-                    if (msg['option'] == "1"):
-                        agentHandler.do_send('Option Selected: Complaint')
-                    elif (msg['option'] == "2"):
-                        agentHandler.do_send('Option Selected: Question')
-                    else:
-                        agentHandler.do_send('Option Selected: Other')
+                    agentHandler.do_send(handleOption(msg['option']))
                     agentHandler.do_send('Topic is: ' + msg['topic'])
                     agentHandler.do_send('You are now connected to Customer ' + customerName)
                     customerHandler.do_send('Welcome to the Chat System. Please wait to be connected')
@@ -48,6 +43,7 @@ class MyHandler(Handler):
                 else:
                     queue.put({'name': msg['join'], 'option': msg['option'], 'topic': msg['topic'], 'handler': self})
                     print 'Customer ' + msg['join'] + ' is waiting in the queue.'
+                    self.do_send('Welcome to the Chat System. Please wait to be connected')
                     self.do_send('All available agents are busy. Please wait')
             else:
                 print 'Error'
@@ -58,6 +54,35 @@ class MyHandler(Handler):
                 agentHandler.do_send(msg['txt'])
             else:
                 self.do_send('All available agents are busy. Please wait')
+        elif 'special' in msg:
+            if msg['special'] == "q":
+                print 'Customer ' + customerName + ' has quit the chat'
+                agentHandler.do_send('Customer ' + customerName + ' has quit the chat\n\n\n')
+                if (not queue.empty()):
+                    nextCustomer = queue.get()
+                    customerName = nextCustomer['name']
+                    customerHandler = nextCustomer['handler']
+                    print 'Customer ' + customerName + ' has connected successfully'
+                    agentHandler.do_send('Customer ' + customerName + ' is being connected')
+                    agentHandler.do_send(handleOption(nextCustomer['option']))
+                    agentHandler.do_send('Topic is: ' + nextCustomer['topic'])
+                    agentHandler.do_send('You are now connected to Customer ' + customerName)
+                    customerHandler.do_send('You are now connected to Agent ' + agentName)
+                else:
+                    customerName = None
+                    customerHandler = None
+                self.do_close()
+            else:
+                # SAVE CHAT
+                pass
+
+def handleOption(option):
+    if (option == "1"):
+        return "Option Selected: Complaint"
+    elif (option == "2"):
+        return "Option Selected: Question"
+    else:
+        return "Option Selected: Other"
 
 port = 8888
 server = Listener(port, MyHandler)

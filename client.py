@@ -12,14 +12,14 @@ class Client(Handler):
 		pass
 
 	def on_close(self):
-		pass
+		sys.exit("Goodbye!")
 
 	def on_msg(self, msg):
 		print msg
 
 def chatSettings():
 	global myname
-	
+
 	personnel = raw_input('Are you agent or customer? ')
 	while (personnel != "agent") and (personnel != "customer"):
 		personnel = raw_input('Invalid. Please select agent or customer: ')
@@ -53,14 +53,6 @@ thread = Thread(target=periodic_poll)
 thread.daemon = True  # die when the main thread dies
 thread.start()
 
-while 1:
-	mytxt = raw_input('')
-	client.do_send({'name': myname, 'txt': mytxt})
-
-
-"""
-def saveCopyOfChat():
-	print('Saved a copy of the chat');
 
 def printEasterEgg():
 	print('');
@@ -74,6 +66,30 @@ def printEasterEgg():
 	print('┏━┓ ︵ /(^.^/)');
 	print('');
 
+
+
+while True:
+	mytxt = raw_input('')
+	if (mytxt == ":q"):
+		client.do_send({'name': myname, 'special': 'q'})
+		client.do_close()
+		break
+	elif (mytxt == ":s"):
+		client.do_send({'name': myname, 'special': 's'})
+	elif (mytxt == ":e"):
+		printEasterEgg()
+	else:
+		client.do_send({'name': myname, 'txt': mytxt})
+
+
+
+
+
+
+
+
+
+"""
 ######## CONTROLLER ########
 
 userType = None; # Customer or Agent
