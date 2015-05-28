@@ -5,6 +5,7 @@ from threading import Thread
 from time import sleep
 
 myname = None
+active = False
 
 class Client(Handler):
 
@@ -15,6 +16,8 @@ class Client(Handler):
 		sys.exit("Goodbye!")
 
 	def on_msg(self, msg):
+		if msg == "Connecting Now!":
+			active = True
 		print msg
 
 def chatSettings():
@@ -70,16 +73,19 @@ def printEasterEgg():
 
 while True:
 	mytxt = raw_input('')
-	if (mytxt == ":q"):
-		client.do_send({'name': myname, 'special': 'q'})
-		client.do_close()
-		break
-	elif (mytxt == ":s"):
-		client.do_send({'name': myname, 'special': 's'})
-	elif (mytxt == ":e"):
-		printEasterEgg()
-	else:
+	if (not active):
 		client.do_send({'name': myname, 'txt': mytxt})
+	else:
+		if (mytxt == ":q"):
+			client.do_send({'name': myname, 'special': 'q'})
+			client.do_close()
+			break
+		elif (mytxt == ":s"):
+			client.do_send({'name': myname, 'special': 's'})
+		elif (mytxt == ":e"):
+			printEasterEgg()
+		else:
+			client.do_send({'name': myname, 'txt': mytxt})
 
 
 
