@@ -27,13 +27,13 @@ class MyHandler(Handler):
             if msg['personnel'] == 'agent':
                 agentName = msg['join']
                 agentHandler = self
-                print 'Agent ' + agentName + ' has joined the chat!'
-                agentHandler.do_send('Welcome to the chat')
+                print 'Agent ' + agentName + ' has connected successfully!'
+                agentHandler.do_send('Connection Successful')
             elif msg['personnel'] == 'customer':
                 if (customerName is None) and (customerHandler is None):
                     customerName = msg['join']
                     customerHandler = self
-                    print 'Customer ' + customerName + ' has joined the chat!'
+                    print 'Customer ' + customerName + ' has connected successfully!'
                     customerHandler.do_send('Welcome to the chat!')
                 else:
                     queue.put({msg['join']: self})
