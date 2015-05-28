@@ -4,6 +4,7 @@ import sys
 from threading import Thread
 from time import sleep
 
+running = True
 myname = None
 active = False
 
@@ -13,10 +14,13 @@ class Client(Handler):
 		pass
 
 	def on_close(self):
-		sys.exit("Goodbye!")
+		global running
+		running = False
+		print "Goodbye! Press Enter to end program."
 
 	def on_msg(self, msg):
-		if msg == "Connecting Now!":
+		global active
+		if msg == 'Connecting Now!':
 			active = True
 		print msg
 
@@ -71,7 +75,7 @@ def printEasterEgg():
 
 
 
-while True:
+while running:
 	mytxt = raw_input('')
 	if (not active):
 		client.do_send({'name': myname, 'txt': mytxt})
@@ -79,7 +83,6 @@ while True:
 		if (mytxt == ":q"):
 			client.do_send({'name': myname, 'special': 'q'})
 			client.do_close()
-			break
 		elif (mytxt == ":s"):
 			client.do_send({'name': myname, 'special': 's'})
 		elif (mytxt == ":e"):

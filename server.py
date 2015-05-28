@@ -69,6 +69,7 @@ class MyHandler(Handler):
                     agentHandler.do_send(handleOption(nextCustomer['option']))
                     agentHandler.do_send('Topic is: ' + nextCustomer['topic'])
                     agentHandler.do_send('You are now connected to Customer ' + customerName)
+                    customerHandler.do_send('Connecting Now!')
                     customerHandler.do_send('You are now connected to Agent ' + agentName)
                 else:
                     customerName = None
