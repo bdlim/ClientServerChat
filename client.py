@@ -80,7 +80,6 @@ thread.start()
 
 
 while running:
-	global mytxt
 
 	mytxt = raw_input('')
 	if (not active):
