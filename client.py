@@ -64,7 +64,7 @@ def chatSettings():
 	else:
 		return {'join': myname, 'personnel': personnel}
 
-host, port = 'localhost', 8888
+host, port = '192.168.2.106', 8888
 client = Client(host, port);
 client.do_send(chatSettings())
 
